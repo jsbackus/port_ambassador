@@ -21,7 +21,8 @@ int main(int argc, char **argv) {
   }
 
   qDebug() << "Services:";
-  foreach( QString val, wall.GetServices( "public" )) {
+  //  foreach( QString val, wall.GetServices( "public" )) {
+  foreach( QString val, wall.GetServices( )) {
     qDebug() << "  " << val << ":";
     wall.DumpService( val );
   }
@@ -30,6 +31,12 @@ int main(int argc, char **argv) {
   foreach( QString val, wall.GetZones() ) {
     qDebug() << "  " << val << ":";
     wall.DumpZone( val );
+  }
+
+  qDebug() << "ICMP Types:";
+  foreach( QString val, wall.GetIcmpTypes() ) {
+    qDebug() << "  " << val << ":";
+    wall.DumpIcmpType( val );
   }
 
   return 0;

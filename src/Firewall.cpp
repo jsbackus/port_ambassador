@@ -103,6 +103,26 @@ const QDBusArgument &operator>>(const QDBusArgument &argument, ServiceSettings &
   return argument;
 }
 
+QDBusArgument &operator<<(QDBusArgument &argument, const IcmpTypeSettings &mystruct) {
+  argument.beginStructure();
+  argument << mystruct.version;
+  argument << mystruct.name;
+  argument << mystruct.description;
+  argument << mystruct.destinations;
+  argument.endStructure();
+  return argument;
+}
+
+const QDBusArgument &operator>>(const QDBusArgument &argument, IcmpTypeSettings &mystruct) {
+  argument.beginStructure();
+  argument >> mystruct.version;
+  argument >> mystruct.name;
+  argument >> mystruct.description;
+  argument >> mystruct.destinations;
+  argument.endStructure();
+  return argument;
+}
+
 Firewall::Firewall() {
   qDBusRegisterMetaType< PortProtoStruct >();
   qDBusRegisterMetaType< QList<PortProtoStruct> >();
@@ -116,6 +136,9 @@ Firewall::Firewall() {
   qDBusRegisterMetaType< ZoneSettings >();
   qDBusRegisterMetaType< QList<ZoneSettings> >();
 
+  qDBusRegisterMetaType< IcmpTypeSettings >();
+  qDBusRegisterMetaType< QList<IcmpTypeSettings> >();
+
   qDBusRegisterMetaType< QList<QStringList> >();
 
   QDBusConnection bus = QDBusConnection::systemBus();
@@ -128,6 +151,9 @@ Firewall::Firewall() {
   _pZoneIface = new QDBusInterface("org.fedoraproject.FirewallD1", 
 				   "/org/fedoraproject/FirewallD1",
 				   "org.fedoraproject.FirewallD1.zone", bus);
+
+  // Connect signals
+  // ** TODO **
   
 }
 
@@ -148,11 +174,15 @@ Firewall::~Firewall() {
   }
 }
 
+void Firewall::Reload() {
+  _pBaseIface->call( "reload" );
+}
+
+void Firewall::SaveSettings() {
+  _pBaseIface->call( "runtimeToPermanent" );  
+}
+
 QList< PortProtoStruct > Firewall::GetPorts( QString zone ) {
-  /*
-  QDBusReply< QList<PortProtoStruct> > reply = 
-    _pZoneIface->call( "getPorts", zone );
-  */
   QDBusReply< QList<QStringList> > reply = 
     _pZoneIface->call( "getPorts", zone );
 
@@ -174,33 +204,17 @@ QList< PortProtoStruct > Firewall::GetPorts( QString zone ) {
 }
 
 QStringList Firewall::GetServices( QString zone ) {
-  QDBusReply< QStringList > reply = _pZoneIface->call( "getServices", zone );
-  if (!reply.isValid()) {
-    qDebug() << "Error:" << reply.error().message();
-    exit(1);
-  }
-  /*
-    foreach (QString val, reply.value()) {
-    qDebug() << val << ":";
-    DumpService( val, bus );
-    }
-  */
-  return reply.value();
-}
+  QDBusReply< QStringList > reply;
 
-QStringList Firewall::GetZones() {
-  QDBusReply< QStringList > reply = _pZoneIface->call( "getZones" );
-  
+  if( 0 < zone.length() ) {
+    reply = _pZoneIface->call( "getServices", zone );
+  } else {
+    reply = _pBaseIface->call( "listServices" );
+  }
   if (!reply.isValid()) {
     qDebug() << "Error:" << reply.error().message();
     exit(1);
   }
-  /*
-    foreach (QString val, reply.value()) {
-    qDebug() << val << ":";
-    DumpService( val, bus );
-    }
-  */
   return reply.value();
 }
 
@@ -232,6 +246,30 @@ void Firewall::DumpService( QString service ) {
     qDebug() << "    " << reply.value().destinations[ key ];
   }
 
+}
+
+QStringList Firewall::GetZones() {
+  QDBusReply< QStringList > reply = _pZoneIface->call( "getZones" );
+  
+  if (!reply.isValid()) {
+    qDebug() << "Error:" << reply.error().message();
+    exit(1);
+  }
+  return reply.value();
+}
+
+QString Firewall::GetDefaultZone() {
+  QDBusReply< QString > reply = _pBaseIface->call( "getDefaultZone" );
+  
+  if (!reply.isValid()) {
+    qDebug() << "Error:" << reply.error().message();
+    exit(1);
+  }
+  return reply.value();
+}
+
+void Firewall::SetDefaultZone( QString zone ) {
+  _pBaseIface->call( "setDefaultZone", zone );
 }
 
 void Firewall::DumpZone(QString zone ) {
@@ -288,3 +326,68 @@ void Firewall::DumpZone(QString zone ) {
 
 }
 
+QStringList Firewall::GetIcmpTypes() {
+  QDBusReply< QStringList > reply = _pBaseIface->call( "listIcmpTypes" );
+  
+  if (!reply.isValid()) {
+    qDebug() << "Error:" << reply.error().message();
+    exit(1);
+  }
+  return reply.value();
+}
+
+void Firewall::DumpIcmpType(QString icmpType ) {
+
+  QDBusReply< IcmpTypeSettings > reply = 
+    _pBaseIface->call("getIcmpTypeSettings", icmpType);
+
+  if (!reply.isValid()) {
+    qDebug() << "Error:" << reply.error().message();
+    exit(1);
+  }
+  qDebug() << "  Version: " << reply.value().version;
+  qDebug() << "  Name: " << reply.value().name;
+  qDebug() << "  Description: " << reply.value().description;
+
+  qDebug() << "  Destinations: ";
+  foreach(QString destination, reply.value().destinations) {
+    qDebug() << "    " << destination;
+  }
+}
+
+bool Firewall::IsInPanicMode() {
+  QDBusReply< bool > reply = 
+    _pBaseIface->call("queryPanicMode");
+
+  if (!reply.isValid()) {
+    qDebug() << "Error:" << reply.error().message();
+    exit(1);
+  }
+
+  return reply.value();
+}
+
+void Firewall::SetPanicMode( bool enable ) {
+
+  if( enable ) {
+    _pBaseIface->call( "enablePanicMode" );
+  } else {
+    _pBaseIface->call( "disablePanicMode" );
+  }
+}
+
+void Firewall::GetPanicModeEnabled() {
+  emit PanicModeChanged( true );
+}
+
+void Firewall::GetPanicModeDisabled() {
+  emit PanicModeChanged( false );
+}
+
+void Firewall::GetReloaded() {
+  emit Reloaded();
+}
+
+void Firewall::GetDefaultZoneChanged( QString zone ) {
+  emit DefaultZoneChanged( zone );
+}

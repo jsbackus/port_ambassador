@@ -70,6 +70,15 @@ struct ZoneSettings {
   QStringList rules;
 };
 
+/*! \brief Structure representing a network service record.
+ */
+struct IcmpTypeSettings {
+  QString version;
+  QString name;
+  QString description;
+  QStringList destinations;
+};
+
 Q_DECLARE_METATYPE(PortProtoStruct)
 Q_DECLARE_METATYPE(QList< PortProtoStruct >)
 
@@ -81,6 +90,9 @@ Q_DECLARE_METATYPE(QList< ServiceSettings >)
 
 Q_DECLARE_METATYPE(ZoneSettings)
 Q_DECLARE_METATYPE(QList< ZoneSettings >)
+
+Q_DECLARE_METATYPE(IcmpTypeSettings)
+Q_DECLARE_METATYPE(QList< IcmpTypeSettings >)
 
 extern QDBusArgument &operator<<(QDBusArgument &argument, 
 				 const PortProtoStruct &mystruct);
@@ -102,14 +114,34 @@ extern QDBusArgument &operator<<(QDBusArgument &argument,
 extern const QDBusArgument &operator>>(const QDBusArgument &argument, 
 				       ServiceSettings &mystruct);
 
+extern QDBusArgument &operator<<(QDBusArgument &argument, 
+				 const IcmpTypeSettings &mystruct);
+extern const QDBusArgument &operator>>(const QDBusArgument &argument, 
+				       IcmpTypeSettings &mystruct);
+
 /*! \brief Class representing the state of the firewall, including information 
   on zones and services.
  */
-class Firewall {
+class Firewall : public QObject {
+
+  Q_OBJECT
+
  public:
 
   Firewall();
   ~Firewall();
+
+  /*! \brief Triggers a reload.
+   */
+  void Reload();
+
+  /*! \brief Makes current settings permanent.
+   */
+  void SaveSettings();
+
+  /*! \addtogroup Ports
+   * @{
+   */
 
   /*! \brief Returns the list of open ports for the specified zone.
    *
@@ -117,21 +149,95 @@ class Firewall {
    */
   QList< PortProtoStruct > GetPorts( QString zone );
 
+  /*! @}
+   */
+
+  /*! \addtogroup Services
+   * @{
+   */
+
   /*! \brief Returns the names of the enabled services for the specified zone.
    */
-  QStringList GetServices( QString zone );
+  QStringList GetServices( QString zone = QString("") );
+
+  /*! \brief Dumps the information for the specified service to the console.
+   */
+  void DumpService( QString service );
+  
+  /*! @}
+   */
+
+  /*! \addtogroup Zones
+   * @{
+   */
 
   /*! \brief Returns the names of available zones.
    */
   QStringList GetZones( );
 
+  /*! \brief Returns the name of the default zone.
+   */
+  QString GetDefaultZone( );
+
+  /*! \brief Sets the name of the default zone.
+   */
+  void SetDefaultZone( QString zone );
+
   /*! \brief Dumps the information for the specified zone to the console.
    */
   void DumpZone( QString zone );
 
-  /*! \brief Dumps the information for the specified service to the console.
+  /*! @}
    */
-  void DumpService( QString service );
+
+  /*! \addtogroup ICMP Types
+   * @{
+   */
+
+  /*! \brief Returns the names of available ICMP Types.
+   */
+  QStringList GetIcmpTypes( );
+
+  /*! \brief Dumps the information for the specified zone to the console.
+   */
+  void DumpIcmpType( QString icmpType );
+
+  /*! @}
+   */
+
+  /*! \addtogroup Panic Mode
+   * @{
+   */
+
+  /*! \brief Returns true if panic mode is enabled.
+   */
+  bool IsInPanicMode( );
+
+  /*! \brief Enables or disables panic mode.
+   */
+  void SetPanicMode( bool enable );
+
+  /*! @}
+   */
+
+ public slots:
+  /*! \brief Slot to connect to FirewallD's PanicModeEnabled signal
+   */
+  void GetPanicModeEnabled();
+  /*! \brief Slot to connect to FirewallD's PanicModeDisabled signal
+   */
+  void GetPanicModeDisabled();
+  /*! \brief Slot to connect to FirewallD's Reloaded signal
+   */
+  void GetReloaded();
+  /*! \brief Slot to connect to FirewallD's DefaultZoneChanged signal
+   */
+  void GetDefaultZoneChanged( QString zone );
+
+ signals:
+  void DefaultZoneChanged(const QString& zone);
+  void PanicModeChanged(const bool state);
+  void Reloaded();
   
  private:
   QDBusInterface* _pBaseIface;
