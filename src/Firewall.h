@@ -160,9 +160,9 @@ class Firewall : public QObject {
    */
   QStringList GetServices( QString zone = QString("") );
 
-  /*! \brief Dumps the information for the specified service to the console.
+  /*! \brief Returns information for the specified service.
    */
-  void DumpService( QString service );
+  ServiceSettings GetService( QString service );
   
   /*! @}
    */
@@ -183,9 +183,9 @@ class Firewall : public QObject {
    */
   void SetDefaultZone( QString zone );
 
-  /*! \brief Dumps the information for the specified zone to the console.
+  /*! \brief Returns information for the specified zone.
    */
-  void DumpZone( QString zone );
+  ZoneSettings GetZone( QString zone );
 
   /*! @}
    */
@@ -198,9 +198,9 @@ class Firewall : public QObject {
    */
   QStringList GetIcmpTypes( );
 
-  /*! \brief Dumps the information for the specified zone to the console.
+  /*! \brief Returnsinformation for the specified ICMP type.
    */
-  void DumpIcmpType( QString icmpType );
+  IcmpTypeSettings GetIcmpType( QString icmpType );
 
   /*! @}
    */

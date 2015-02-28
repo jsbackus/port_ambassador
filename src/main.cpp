@@ -2,6 +2,7 @@
 #include <QtCore/QDebug>
 
 #include "Firewall.h"
+#include "Firewall_debug.h"
 
 int main(int argc, char **argv) {
   QCoreApplication app(argc, argv);
@@ -24,19 +25,19 @@ int main(int argc, char **argv) {
   //  foreach( QString val, wall.GetServices( "public" )) {
   foreach( QString val, wall.GetServices( )) {
     qDebug() << "  " << val << ":";
-    wall.DumpService( val );
+    DumpService( wall, val );
   }
 
   qDebug() << "Zones:";
   foreach( QString val, wall.GetZones() ) {
     qDebug() << "  " << val << ":";
-    wall.DumpZone( val );
+    DumpZone( wall, val );
   }
 
   qDebug() << "ICMP Types:";
   foreach( QString val, wall.GetIcmpTypes() ) {
     qDebug() << "  " << val << ":";
-    wall.DumpIcmpType( val );
+    DumpIcmpType( wall, val );
   }
 
   return 0;

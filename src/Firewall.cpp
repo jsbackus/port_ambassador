@@ -218,7 +218,7 @@ QStringList Firewall::GetServices( QString zone ) {
   return reply.value();
 }
 
-void Firewall::DumpService( QString service ) {
+ServiceSettings Firewall::GetService( QString service ) {
 
   QDBusReply< ServiceSettings > reply = 
     _pBaseIface->call("getServiceSettings", service);
@@ -227,25 +227,8 @@ void Firewall::DumpService( QString service ) {
     qDebug() << "Error:" << reply.error().message();
     exit(1);
   }
-  qDebug() << "  Version: " << reply.value().version;
-  qDebug() << "  Name: " << reply.value().name;
-  qDebug() << "  Description: " << reply.value().description;
-
-  qDebug() << "  Ports: ";
-  foreach(PortProtoStruct proto, reply.value().ports) {
-    qDebug() << "    " << proto.port << " -> " << proto.protocol;
-  }
-
-  qDebug() << "  Modules: ";
-  foreach(QString module, reply.value().modules) {
-    qDebug() << "    " << module;
-  }
-
-  qDebug() << "  Destinations: ";
-  foreach(QString key, reply.value().destinations.keys() ) {
-    qDebug() << "    " << reply.value().destinations[ key ];
-  }
-
+  // QDBusReply will return a valid but empty object.
+  return reply.value();
 }
 
 QStringList Firewall::GetZones() {
@@ -272,7 +255,7 @@ void Firewall::SetDefaultZone( QString zone ) {
   _pBaseIface->call( "setDefaultZone", zone );
 }
 
-void Firewall::DumpZone(QString zone ) {
+ZoneSettings Firewall::GetZone(QString zone ) {
 
   QDBusReply< ZoneSettings > reply = 
     _pBaseIface->call("getZoneSettings", zone);
@@ -281,49 +264,9 @@ void Firewall::DumpZone(QString zone ) {
     qDebug() << "Error:" << reply.error().message();
     exit(1);
   }
-  qDebug() << "  Version: " << reply.value().version;
-  qDebug() << "  Name: " << reply.value().name;
-  qDebug() << "  Description: " << reply.value().description;
-  qDebug() << "  Target: " << reply.value().target;
 
-  qDebug() << "  Services: ";
-  foreach(QString service, reply.value().services) {
-    qDebug() << "    " << service;
-  }
-
-  qDebug() << "  Ports: ";
-  foreach(PortProtoStruct proto, reply.value().ports) {
-    qDebug() << "    " << proto.port << " -> " << proto.protocol;
-  }
-
-  qDebug() << "  ICMP Blocks: ";
-  foreach(QString block, reply.value().icmp_blocks) {
-    qDebug() << "    " << block;
-  }
-
-  qDebug() << "  Masquerade: " << reply.value().masquerade;
-
-  qDebug() << "  Forwards: ";
-  foreach(ForwardStruct forward, reply.value().forwards) {
-    qDebug() << "    " << forward.port << "/" << forward.protocol << " -> " 
-	     << forward.to_address << ":" << forward.to_port;
-  }
-
-  qDebug() << "  Interfaces: ";
-  foreach(QString iface, reply.value().ifaces) {
-    qDebug() << "    " << iface;
-  }
-
-  qDebug() << "  Sources: ";
-  foreach(QString src, reply.value().sources) {
-    qDebug() << "    " << src;
-  }
-
-  qDebug() << "  Rules: ";
-  foreach(QString rule, reply.value().rules) {
-    qDebug() << "    " << rule;
-  }
-
+  // QDBusReply will return a valid but empty object.
+  return reply.value();
 }
 
 QStringList Firewall::GetIcmpTypes() {
@@ -336,7 +279,7 @@ QStringList Firewall::GetIcmpTypes() {
   return reply.value();
 }
 
-void Firewall::DumpIcmpType(QString icmpType ) {
+IcmpTypeSettings Firewall::GetIcmpType( QString icmpType ) {
 
   QDBusReply< IcmpTypeSettings > reply = 
     _pBaseIface->call("getIcmpTypeSettings", icmpType);
@@ -345,14 +288,9 @@ void Firewall::DumpIcmpType(QString icmpType ) {
     qDebug() << "Error:" << reply.error().message();
     exit(1);
   }
-  qDebug() << "  Version: " << reply.value().version;
-  qDebug() << "  Name: " << reply.value().name;
-  qDebug() << "  Description: " << reply.value().description;
 
-  qDebug() << "  Destinations: ";
-  foreach(QString destination, reply.value().destinations) {
-    qDebug() << "    " << destination;
-  }
+  // QDBusReply will return a valid but empty object.
+  return reply.value();
 }
 
 bool Firewall::IsInPanicMode() {
