@@ -21,7 +21,6 @@
  *    https://github.com/jsbackus/SimpleFirewallClient
  */
 
-#include <QtCore/QDebug>
 #include <QDBusMetaType>
 
 #include "Firewall.h"
@@ -198,20 +197,25 @@ Firewall::~Firewall() {
 }
 
 void Firewall::Reload() {
-  _pBaseIface->call( "reload" );
+  QDBusReply< QString > reply = _pBaseIface->call( "reload" );
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
+  }
 }
 
 void Firewall::SaveSettings() {
-  _pBaseIface->call( "runtimeToPermanent" );  
+  QDBusReply< QString > reply = _pBaseIface->call( "runtimeToPermanent" );  
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
+  }
 }
 
 QList< PortProtoStruct > Firewall::GetPorts( QString zone ) {
   QDBusReply< QList<QStringList> > reply = 
     _pZoneIface->call( "getPorts", zone );
 
-  if (!reply.isValid()) {
-    qDebug() << "Error:" << reply.error().message();
-    exit(1);
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
 
   QList<PortProtoStruct> retVal;
@@ -234,9 +238,8 @@ QStringList Firewall::GetServices( QString zone ) {
   } else {
     reply = _pBaseIface->call( "listServices" );
   }
-  if (!reply.isValid()) {
-    qDebug() << "Error:" << reply.error().message();
-    exit(1);
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
   return reply.value();
 }
@@ -246,36 +249,39 @@ ServiceSettings Firewall::GetService( QString service ) {
   QDBusReply< ServiceSettings > reply = 
     _pBaseIface->call("getServiceSettings", service);
 
-  if (!reply.isValid()) {
-    qDebug() << "Error:" << reply.error().message();
-    exit(1);
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
-  // QDBusReply will return a valid but empty object.
+
   return reply.value();
 }
 
 QStringList Firewall::GetZones() {
   QDBusReply< QStringList > reply = _pZoneIface->call( "getZones" );
   
-  if (!reply.isValid()) {
-    qDebug() << "Error:" << reply.error().message();
-    exit(1);
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
+
   return reply.value();
 }
 
 QString Firewall::GetDefaultZone() {
   QDBusReply< QString > reply = _pBaseIface->call( "getDefaultZone" );
   
-  if (!reply.isValid()) {
-    qDebug() << "Error:" << reply.error().message();
-    exit(1);
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
+
   return reply.value();
 }
 
 void Firewall::SetDefaultZone( QString zone ) {
-  _pBaseIface->call( "setDefaultZone", zone );
+  QDBusReply< QString > reply = _pBaseIface->call( "setDefaultZone", zone );
+
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
+  }
 }
 
 ZoneSettings Firewall::GetZone(QString zone ) {
@@ -283,9 +289,8 @@ ZoneSettings Firewall::GetZone(QString zone ) {
   QDBusReply< ZoneSettings > reply = 
     _pBaseIface->call("getZoneSettings", zone);
 
-  if (!reply.isValid()) {
-    qDebug() << "Error:" << reply.error().message();
-    exit(1);
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
 
   // QDBusReply will return a valid but empty object.
@@ -295,10 +300,10 @@ ZoneSettings Firewall::GetZone(QString zone ) {
 QStringList Firewall::GetIcmpTypes() {
   QDBusReply< QStringList > reply = _pBaseIface->call( "listIcmpTypes" );
   
-  if (!reply.isValid()) {
-    qDebug() << "Error:" << reply.error().message();
-    exit(1);
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
+
   return reply.value();
 }
 
@@ -307,9 +312,8 @@ IcmpTypeSettings Firewall::GetIcmpType( QString icmpType ) {
   QDBusReply< IcmpTypeSettings > reply = 
     _pBaseIface->call("getIcmpTypeSettings", icmpType);
 
-  if (!reply.isValid()) {
-    qDebug() << "Error:" << reply.error().message();
-    exit(1);
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
 
   // QDBusReply will return a valid but empty object.
@@ -320,9 +324,8 @@ bool Firewall::IsInPanicMode() {
   QDBusReply< bool > reply = 
     _pBaseIface->call("queryPanicMode");
 
-  if (!reply.isValid()) {
-    qDebug() << "Error:" << reply.error().message();
-    exit(1);
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
 
   return reply.value();
@@ -330,11 +333,17 @@ bool Firewall::IsInPanicMode() {
 
 void Firewall::SetPanicMode( bool enable ) {
 
+  QDBusReply< QString > reply;
   if( enable ) {
-    _pBaseIface->call( "enablePanicMode" );
+    reply = _pBaseIface->call( "enablePanicMode" );
   } else {
-    _pBaseIface->call( "disablePanicMode" );
+    reply = _pBaseIface->call( "disablePanicMode" );
   }
+
+  if(!reply.isValid()) {
+    emit OnError( QString("Firewall Error: ") + reply.error().message() );
+  }
+
 }
 
 void Firewall::GetPanicModeEnabled() {

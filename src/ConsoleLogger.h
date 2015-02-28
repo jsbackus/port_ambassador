@@ -21,24 +21,28 @@
  *    https://github.com/jsbackus/SimpleFirewallClient
  */
 
-/*! \file Firewall_debug.h
- *  \brief Signatures of debug functions related to the Firewall class.
- */
-#ifndef __FIREWALL_DEBUG_H__
-#define __FIREWALL_DEBUG_H__
+#ifndef __CONSOLELOGGER_H__
+#define __CONSOLELOGGER_H__
 
-#include "Firewall.h"
+#include <QObject>
+#include <QString>
 
-/*! \brief Dumps the information for the specified service to the console.
+/*! \brief Simple class that will log the arguments to its slots to the console.
  */
-extern void DumpService( Firewall& wall, QString service );
+class ConsoleLogger : public QObject {
+  Q_OBJECT
+
+ public:
+  void SetThreshold( int threshold );
+  int GetThreshold();
   
-/*! \brief Dumps the information for the specified zone to the console.
- */
-extern void DumpZone( Firewall& wall, QString zone );
-
-/*! \brief Dumps the information for the specified zone to the console.
- */
-extern void DumpIcmpType( Firewall& wall, QString icmpType );
+  public slots:
+    void ErrorMsg( const QString& msg );
+    void WarningMsg( const QString& msg );
+    void DebugMsg( const int level, const QString& msg );
+    
+ private:
+    int _threshold;
+};
 
 #endif

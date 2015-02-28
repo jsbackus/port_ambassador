@@ -21,24 +21,22 @@
  *    https://github.com/jsbackus/SimpleFirewallClient
  */
 
-/*! \file Firewall_debug.h
- *  \brief Signatures of debug functions related to the Firewall class.
- */
-#ifndef __FIREWALL_DEBUG_H__
-#define __FIREWALL_DEBUG_H__
+#include <iostream>
 
-#include "Firewall.h"
+#include "ConsoleLogger.h"
 
-/*! \brief Dumps the information for the specified service to the console.
- */
-extern void DumpService( Firewall& wall, QString service );
-  
-/*! \brief Dumps the information for the specified zone to the console.
- */
-extern void DumpZone( Firewall& wall, QString zone );
+using namespace std;
 
-/*! \brief Dumps the information for the specified zone to the console.
- */
-extern void DumpIcmpType( Firewall& wall, QString icmpType );
+void ConsoleLogger::ErrorMsg( const QString& msg ) {
+  wcout << L"[Error] " << msg.toUtf8().constData() << endl;
+}
 
-#endif
+void ConsoleLogger::WarningMsg( const QString& msg ) {
+  wcout << L"[Warning] " << msg.toUtf8().constData() << endl;
+}
+
+void ConsoleLogger::DebugMsg( const int level, const QString& msg ) {
+  if( level < _threshold ) {
+    wcout << L"[Debug] " << msg.toUtf8().constData() << endl;
+  }
+}

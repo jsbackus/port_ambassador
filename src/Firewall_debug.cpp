@@ -24,6 +24,8 @@
 /*! \file Firewall_debug.cpp
  *  \brief Implementations of debug functions related to the Firewall class.
  */
+#include <QtCore/QDebug>
+
 #include "Firewall.h"
 
 void DumpService( Firewall& wall, QString service ) {

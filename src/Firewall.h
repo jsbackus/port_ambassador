@@ -258,8 +258,26 @@ class Firewall : public QObject {
   void GetDefaultZoneChanged( QString zone );
 
  signals:
-  void DefaultZoneChanged(const QString& zone);
-  void PanicModeChanged(const bool state);
+  /*! \brief Emitted whenever an error occurs.
+   *
+   * \param msg Error message describing problem.
+   */
+  void OnError( const QString& msg );
+
+  /*! \brief Emitted whenever the default zone changes.
+   *
+   * \param zone The name of the new default zone.
+   */
+  void DefaultZoneChanged( const QString& zone );
+
+  /*! \brief Emitted whenever the state of panic mode changes.
+   *
+   * \param state The new state of panic mode.
+   */
+  void PanicModeChanged( const bool state );
+
+  /*! \brief Emitted whenever the firewall is reloaded.
+   */
   void Reloaded();
   
  private:

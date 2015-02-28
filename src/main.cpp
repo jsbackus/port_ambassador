@@ -26,6 +26,7 @@
 
 #include "Firewall.h"
 #include "Firewall_debug.h"
+#include "ConsoleLogger.h"
 
 int main(int argc, char **argv) {
   QCoreApplication app(argc, argv);
@@ -38,6 +39,11 @@ int main(int argc, char **argv) {
   }
 
   Firewall wall;
+  ConsoleLogger logger;
+
+  // Connect Firewall's OnError to ConsoleLogger's NewMsg
+  QObject::connect( &wall, SIGNAL( OnError(const QString&) ),
+		    &logger, SLOT( ErrorMsg(const QString&) ) );
 
   qDebug() << "Ports:";
   foreach( PortProtoStruct val, wall.GetPorts( "public" )) {
