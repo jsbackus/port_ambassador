@@ -1,0 +1,20 @@
+-= SimpleFirewallClient =-
+==========================
+
+SimpleFirewallClient is a graphical tool for configuring the firewall on Linux
+machines. It focuses on easy of use over exposing all available knobs.
+
+Currently SimpleFirewallClient only works with FirewallD.
+
+-= Requirements =-
+==========================
+* Qt5 - tested with Qt 5.4.0
+
+-= Homepage =-
+==========================
+http://github.com/jsbackus/simple_firewall_client
+
+-= Copyright =-
+==========================
+(c) 2015 Jeff Backus
+See LICENSE for information regarding use and distribution.
