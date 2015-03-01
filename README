@@ -1,10 +1,10 @@
--= SimpleFirewallClient =-
+-= PortAmbassador =-
 ==========================
 
-SimpleFirewallClient is a graphical tool for configuring the firewall on Linux
+PortAmbassador is a graphical tool for configuring the firewall on Linux
 machines. It focuses on easy of use over exposing all available knobs.
 
-Currently SimpleFirewallClient only works with FirewallD.
+Currently PortAmbassador only works with FirewallD.
 
 -= Requirements =-
 ==========================
@@ -12,7 +12,7 @@ Currently SimpleFirewallClient only works with FirewallD.
 
 -= Homepage =-
 ==========================
-http://github.com/jsbackus/simple_firewall_client
+http://github.com/jsbackus/port_ambassador
 
 -= Copyright =-
 ==========================

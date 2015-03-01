@@ -16,4 +16,4 @@ unix:OBJECTS_DIR = ./compiled_objects
 unix:MOC_DIR = ./compiled_objects
 //unix:LIBS	+= -lGL -lGLU -lX11 -lXmu -lXi -lm
 
-TARGET		= firewalld_client
+TARGET		= port_ambassador
