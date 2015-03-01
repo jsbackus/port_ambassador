@@ -2,7 +2,9 @@
 ==========================
 
 PortAmbassador is a graphical tool for configuring the firewall on Linux
-machines. It focuses on easy of use over exposing all available knobs.
+machines. It focuses on ease of use over exposing all available knobs.
+PortAmbassador will monitor the system for open ports to help guide and
+diagnose connectin problems.
 
 Currently PortAmbassador only works with FirewallD.
 
