@@ -40,3 +40,11 @@ void ConsoleLogger::DebugMsg( const int level, const QString& msg ) {
     wcout << L"[Debug] " << msg.toUtf8().constData() << endl;
   }
 }
+
+void ConsoleLogger::SetThreshold( int threshold ) {
+  _threshold = threshold;
+}
+
+int ConsoleLogger::GetThreshold() {
+  return _threshold;
+}

@@ -175,8 +175,21 @@ Firewall::Firewall() {
 				   "org.fedoraproject.FirewallD1.zone", bus);
 
   // Connect signals
-  // ** TODO **
-  
+  bus.connect("org.fedoraproject.FirewallD1", "/org/fedoraproject/FirewallD1",
+	      "org.fedoraproject.FirewallD1", "DefaultZoneChanged", this, 
+	      SLOT(GetDefaultZoneChanged(QString)));
+
+  bus.connect("org.fedoraproject.FirewallD1", "/org/fedoraproject/FirewallD1",
+	      "org.fedoraproject.FirewallD1", "PanicModeDisabled", this, 
+	      SLOT(GetPanicModeDisabled()));
+
+  bus.connect("org.fedoraproject.FirewallD1", "/org/fedoraproject/FirewallD1",
+	      "org.fedoraproject.FirewallD1", "PanicModeEnabled", this, 
+	      SLOT(GetPanicModeEnabled()));
+
+  bus.connect("org.fedoraproject.FirewallD1", "/org/fedoraproject/FirewallD1",
+	      "org.fedoraproject.FirewallD1", "Reloaded", this, 
+	      SLOT(Reloaded()));
 }
 
 Firewall::~Firewall() {
@@ -303,7 +316,6 @@ QStringList Firewall::GetIcmpTypes() {
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
-
   return reply.value();
 }
 
@@ -347,17 +359,21 @@ void Firewall::SetPanicMode( bool enable ) {
 }
 
 void Firewall::GetPanicModeEnabled() {
+  emit OnDebug( 5, "Panic Mode Enabled" );
   emit PanicModeChanged( true );
 }
 
 void Firewall::GetPanicModeDisabled() {
+  emit OnDebug( 5, "Panic Mode Disabled" );
   emit PanicModeChanged( false );
 }
 
 void Firewall::GetReloaded() {
+  emit OnDebug( 5, "Firewall Reloaded" );
   emit Reloaded();
 }
 
 void Firewall::GetDefaultZoneChanged( QString zone ) {
+  emit OnDebug( 5, QString("Default Zone Changed to '") + zone + QString("'") );
   emit DefaultZoneChanged( zone );
 }

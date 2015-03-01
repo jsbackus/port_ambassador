@@ -260,9 +260,22 @@ class Firewall : public QObject {
  signals:
   /*! \brief Emitted whenever an error occurs.
    *
-   * \param msg Error message describing problem.
+   * \param msg Error message describing the problem.
    */
   void OnError( const QString& msg );
+
+  /*! \brief Emitted warning messages
+   *
+   * \param msg Warning message describing the issue.
+   */
+  void OnWarn( const QString& msg );
+
+  /*! \brief Emitted debug messages and corresponding level.
+   *
+   * \param level Debug message level.
+   * \param msg Debug message.
+   */
+  void OnDebug( const int level, const QString& msg );
 
   /*! \brief Emitted whenever the default zone changes.
    *

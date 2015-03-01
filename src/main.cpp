@@ -40,10 +40,17 @@ int main(int argc, char **argv) {
 
   Firewall wall;
   ConsoleLogger logger;
+  logger.SetThreshold(10);
 
-  // Connect Firewall's OnError to ConsoleLogger's NewMsg
+  // Connect Firewall's message signals to ConsoleLogger's respective slots.
   QObject::connect( &wall, SIGNAL( OnError(const QString&) ),
 		    &logger, SLOT( ErrorMsg(const QString&) ) );
+
+  QObject::connect( &wall, SIGNAL( OnWarn(const QString&) ),
+		    &logger, SLOT( WarningMsg(const QString&) ) );
+
+  QObject::connect( &wall, SIGNAL( OnDebug(const int, const QString&) ),
+		    &logger, SLOT( DebugMsg(const int, const QString&) ) );
 
   qDebug() << "Ports:";
   foreach( PortProtoStruct val, wall.GetPorts( "public" )) {
@@ -67,6 +74,11 @@ int main(int argc, char **argv) {
   foreach( QString val, wall.GetIcmpTypes() ) {
     qDebug() << "  " << val << ":";
     DumpIcmpType( wall, val );
+  }
+  
+  // Enter main event loop until user hits CTRL+C
+  while(1) {
+    app.processEvents();
   }
 
   return 0;
