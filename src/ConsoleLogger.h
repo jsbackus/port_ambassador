@@ -1,5 +1,5 @@
 /*
- *    PortAmbassador is a GUI tool for configuring the a Linux firewall.
+ *    PortAmbassador is a GUI tool for configuring a Linux firewall.
  *    (c) 2015 Jeff Backus <jeff.backus@gmail.com>
  *
  *    This file is part of PortAmbassador.
