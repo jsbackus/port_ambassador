@@ -25,6 +25,12 @@
 sudo qdbus --system --literal org.fedoraproject.FirewallD1 /org/fedoraproject/FirewallD1 org.fedoraproject.FirewallD1.zone.getZones
 sudo qdbus --system --literal org.fedoraproject.FirewallD1 /org/fedoraproject/FirewallD1 org.fedoraproject.FirewallD1.getZoneSettings public
 
+Getting properties;
+qdbus --system org.fedoraproject.FirewallD1 /org/fedoraproject/FirewallD1 org.freedesktop.DBus.Properties.Get org.fedoraproject.FirewallD1 version
+
+Generating initial XML:
+http://blog.mafr.de/2006/12/19/using-dbus-introspection/
+
 Old solution to permissions issues:
 https://lists.fedoraproject.org/pipermail/users/2011-January/389884.html
 
@@ -53,7 +59,32 @@ struct PortProtoStruct {
   QString port;
   QString protocol;
 };
+#ifdef PFFT
+/*! \brief Structure representing a passthrough record
+ */
+struct PassthroughStruct {
+  QString ipv;
+  QStringList arguments;
+};
 
+/*! \brief Structure representing a rules record
+ */
+struct RulesStruct {
+  QString ipv;
+  QString table;
+  QString chain;
+  int priority;
+  QStringList arguments;
+};
+
+/*! \brief Structure representing a chain record
+ */
+struct ChainStruct {
+  QString ipv;
+  QString table;
+  QString chain;
+};
+#endif
 /*! \brief Structure representing a port forwarding record.
  */
 struct ForwardStruct {

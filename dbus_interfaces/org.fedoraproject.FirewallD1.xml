@@ -1,0 +1,591 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/org/fedoraproject/FirewallD1">
+  <interface name="org.fedoraproject.FirewallD1.direct">
+    <method name="queryPassthrough">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="as" name="args" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="addRule">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="s" name="table" />
+      <arg direction="in"  type="s" name="chain" />
+      <arg direction="in"  type="i" name="priority" />
+      <arg direction="in"  type="as" name="args" />
+    </method>
+    <method name="passthrough">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="as" name="args" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="getAllPassthroughs">
+      <arg direction="out" type="a(sas)" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="PassthroughStruct"/>
+    </method>
+    <method name="getAllChains">
+      <arg direction="out" type="a(sss)" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="ChainStruct"/>
+    </method>
+    <method name="getPassthroughs">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="out" type="aas" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="QStringListList"/>
+    </method>
+    <method name="getRules">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="s" name="table" />
+      <arg direction="in"  type="s" name="chain" />
+      <arg direction="out" type="a(ias)" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="ChainRulesStruct"/>
+    </method>
+    <method name="getChains">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="s" name="table" />
+      <arg direction="out" type="as" />
+    </method>
+    <method name="addPassthrough">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="as" name="args" />
+    </method>
+    <method name="queryChain">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="s" name="table" />
+      <arg direction="in"  type="s" name="chain" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="removePassthrough">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="as" name="args" />
+    </method>
+    <method name="removeRules">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="s" name="table" />
+      <arg direction="in"  type="s" name="chain" />
+    </method>
+    <signal name="RuleAdded">
+      <arg type="s" name="ipv" />
+      <arg type="s" name="table" />
+      <arg type="s" name="chain" />
+      <arg type="i" name="priority" />
+      <arg type="as" name="args" />
+    </signal>
+    <method name="getAllRules">
+      <arg direction="out" type="a(sssias)" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="RulesStruct"/>
+    </method>
+    <signal name="PassthroughRemoved">
+      <arg type="s" name="ipv" />
+      <arg type="as" name="args" />
+    </signal>
+    <method name="removeRule">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="s" name="table" />
+      <arg direction="in"  type="s" name="chain" />
+      <arg direction="in"  type="i" name="priority" />
+      <arg direction="in"  type="as" name="args" />
+    </method>
+    <method name="addChain">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="s" name="table" />
+      <arg direction="in"  type="s" name="chain" />
+    </method>
+    <signal name="PassthroughAdded">
+      <arg type="s" name="ipv" />
+      <arg type="as" name="args" />
+    </signal>
+    <method name="removeChain">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="s" name="table" />
+      <arg direction="in"  type="s" name="chain" />
+    </method>
+    <signal name="ChainRemoved">
+      <arg type="s" name="ipv" />
+      <arg type="s" name="table" />
+      <arg type="s" name="chain" />
+    </signal>
+    <signal name="RuleRemoved">
+      <arg type="s" name="ipv" />
+      <arg type="s" name="table" />
+      <arg type="s" name="chain" />
+      <arg type="i" name="priority" />
+      <arg type="as" name="args" />
+    </signal>
+    <method name="queryRule">
+      <arg direction="in"  type="s" name="ipv" />
+      <arg direction="in"  type="s" name="table" />
+      <arg direction="in"  type="s" name="chain" />
+      <arg direction="in"  type="i" name="priority" />
+      <arg direction="in"  type="as" name="args" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="removeAllPassthroughs">
+    </method>
+    <signal name="ChainAdded">
+      <arg type="s" name="ipv" />
+      <arg type="s" name="table" />
+      <arg type="s" name="chain" />
+    </signal>
+  </interface>
+  <interface name="org.fedoraproject.FirewallD1">
+    <method name="disablePanicMode">
+    </method>
+    <method name="listIcmpTypes">
+      <arg direction="out" type="as" />
+    </method>
+    <method name="completeReload">
+    </method>
+    <signal name="PanicModeDisabled">
+    </signal>
+    <method name="queryPanicMode">
+      <arg direction="out" type="b" />
+    </method>
+    <method name="getDefaultZone">
+      <arg direction="out" type="s" />
+    </method>
+    <signal name="Reloaded">
+    </signal>
+    <method name="enablePanicMode">
+    </method>
+    <method name="runtimeToPermanent">
+    </method>
+    <method name="getIcmpTypeSettings">
+      <arg direction="in"  type="s" name="icmptype" />
+      <arg direction="out" type="(sssas)" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="IcmpTypeSettings"/>
+    </method>
+    <method name="reload">
+    </method>
+    <method name="authorizeAll">
+    </method>
+    <signal name="PanicModeEnabled">
+    </signal>
+    <method name="getServiceSettings">
+      <arg direction="in"  type="s" name="service" />
+      <arg direction="out" type="(sssa(ss)asa{ss})" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="ServiceSettings"/>
+    </method>
+    <method name="getZoneSettings">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="(sssbsasa(ss)asba(ssss)asasas)" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="ZoneSettings"/>
+    </method>
+    <method name="setDefaultZone">
+      <arg direction="in"  type="s" name="zone" />
+    </method>
+    <method name="listServices">
+      <arg direction="out" type="as" />
+    </method>
+    <signal name="DefaultZoneChanged">
+      <arg type="s" name="zone" />
+    </signal>
+  </interface>
+  <interface name="org.freedesktop.DBus.Introspectable">
+    <method name="Introspect">
+      <arg direction="out" type="s" />
+    </method>
+  </interface>
+  <interface name="org.fedoraproject.FirewallD1.policies">
+    <signal name="LockdownDisabled">
+    </signal>
+    <method name="addLockdownWhitelistContext">
+      <arg direction="in"  type="s" name="context" />
+    </method>
+    <method name="getLockdownWhitelistCommands">
+      <arg direction="out" type="as" />
+    </method>
+    <method name="removeLockdownWhitelistCommand">
+      <arg direction="in"  type="s" name="command" />
+    </method>
+    <signal name="LockdownEnabled">
+    </signal>
+    <signal name="LockdownWhitelistContextAdded">
+      <arg type="s" name="context" />
+    </signal>
+    <method name="addLockdownWhitelistUser">
+      <arg direction="in"  type="s" name="user" />
+    </method>
+    <method name="queryLockdownWhitelistContext">
+      <arg direction="in"  type="s" name="context" />
+      <arg direction="out" type="b" />
+    </method>
+    <signal name="LockdownWhitelistUidAdded">
+      <arg type="i" name="uid" />
+    </signal>
+    <method name="getLockdownWhitelistUsers">
+      <arg direction="out" type="as" />
+    </method>
+    <method name="getLockdownWhitelistContexts">
+      <arg direction="out" type="as" />
+    </method>
+    <signal name="LockdownWhitelistCommandRemoved">
+      <arg type="s" name="command" />
+    </signal>
+    <method name="queryLockdown">
+      <arg direction="out" type="b" />
+    </method>
+    <method name="enableLockdown">
+    </method>
+    <method name="queryLockdownWhitelistUser">
+      <arg direction="in"  type="s" name="user" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="removeLockdownWhitelistUid">
+      <arg direction="in"  type="i" name="uid" />
+    </method>
+    <method name="removeLockdownWhitelistContext">
+      <arg direction="in"  type="s" name="context" />
+    </method>
+    <signal name="LockdownWhitelistCommandAdded">
+      <arg type="s" name="command" />
+    </signal>
+    <method name="disableLockdown">
+    </method>
+    <method name="addLockdownWhitelistUid">
+      <arg direction="in"  type="i" name="uid" />
+    </method>
+    <method name="removeLockdownWhitelistUser">
+      <arg direction="in"  type="s" name="user" />
+    </method>
+    <signal name="LockdownWhitelistContextRemoved">
+      <arg type="s" name="context" />
+    </signal>
+    <method name="getLockdownWhitelistUids">
+      <arg direction="out" type="ai" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="UIDList"/>
+    </method>
+    <signal name="LockdownWhitelistUserAdded">
+      <arg type="s" name="user" />
+    </signal>
+    <method name="addLockdownWhitelistCommand">
+      <arg direction="in"  type="s" name="command" />
+    </method>
+    <signal name="LockdownWhitelistUserRemoved">
+      <arg type="s" name="user" />
+    </signal>
+    <signal name="LockdownWhitelistUidRemoved">
+      <arg type="i" name="uid" />
+    </signal>
+    <method name="queryLockdownWhitelistCommand">
+      <arg direction="in"  type="s" name="command" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="queryLockdownWhitelistUid">
+      <arg direction="in"  type="i" name="uid" />
+      <arg direction="out" type="b" />
+    </method>
+  </interface>
+  <interface name="org.freedesktop.DBus.Properties">
+    <signal name="PropertiesChanged">
+      <arg type="s" name="interface_name" />
+      <arg type="a{sv}" name="changed_properties" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.In1" value="StringVariantDict"/>
+      <arg type="as" name="invalidated_properties" />
+    </signal>
+    <method name="Set">
+      <arg direction="in"  type="s" name="interface_name" />
+      <arg direction="in"  type="s" name="property_name" />
+      <arg direction="in"  type="v" name="new_value" />
+    </method>
+    <method name="GetAll">
+      <arg direction="in"  type="s" name="interface_name" />
+      <arg direction="out" type="a{sv}" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="StringVariantDict"/>
+    </method>
+    <method name="Get">
+      <arg direction="in"  type="s" name="interface_name" />
+      <arg direction="in"  type="s" name="property_name" />
+      <arg direction="out" type="v" />
+    </method>
+  </interface>
+  <interface name="org.fedoraproject.FirewallD1.zone">
+    <method name="changeZone">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="interface" />
+      <arg direction="out" type="s" />
+    </method>
+    <signal name="IcmpBlockRemoved">
+      <arg type="s" name="zone" />
+      <arg type="s" name="icmp" />
+    </signal>
+    <method name="getInterfaces">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="as" />
+    </method>
+    <method name="removeService">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="service" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="removeInterface">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="interface" />
+      <arg direction="out" type="s" />
+    </method>
+    <signal name="MasqueradeRemoved">
+      <arg type="s" name="zone" />
+    </signal>
+    <method name="queryPort">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="port" />
+      <arg direction="in"  type="s" name="protocol" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="addMasquerade">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="i" name="timeout" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="getRichRules">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="as" />
+    </method>
+    <method name="getPorts">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="aas" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="PortProtoStructList"/>
+    </method>
+    <signal name="PortAdded">
+      <arg type="s" name="zone" />
+      <arg type="s" name="port" />
+      <arg type="s" name="protocol" />
+      <arg type="i" name="timeout" />
+    </signal>
+    <method name="addService">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="service" />
+      <arg direction="in"  type="i" name="timeout" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="queryInterface">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="interface" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="getServices">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="as" />
+    </method>
+    <signal name="RichRuleAdded">
+      <arg type="s" name="zone" />
+      <arg type="s" name="rule" />
+      <arg type="i" name="timeout" />
+    </signal>
+    <method name="queryService">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="service" />
+      <arg direction="out" type="b" />
+    </method>
+    <signal name="RichRuleRemoved">
+      <arg type="s" name="zone" />
+      <arg type="s" name="rule" />
+    </signal>
+    <signal name="SourceRemoved">
+      <arg type="s" name="zone" />
+      <arg type="s" name="source" />
+    </signal>
+    <method name="isImmutable">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="addIcmpBlock">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="icmp" />
+      <arg direction="in"  type="i" name="timeout" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="addSource">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="source" />
+      <arg direction="out" type="s" />
+    </method>
+    <signal name="ZoneChanged">
+      <arg type="s" name="zone" />
+      <arg type="s" name="interface" />
+    </signal>
+    <method name="querySource">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="source" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="addPort">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="port" />
+      <arg direction="in"  type="s" name="protocol" />
+      <arg direction="in"  type="i" name="timeout" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="queryIcmpBlock">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="icmp" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="removeIcmpBlock">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="icmp" />
+      <arg direction="out" type="s" />
+    </method>
+    <signal name="InterfaceRemoved">
+      <arg type="s" name="zone" />
+      <arg type="s" name="interface" />
+    </signal>
+    <method name="getZoneOfInterface">
+      <arg direction="in"  type="s" name="interface" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="changeZoneOfInterface">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="interface" />
+      <arg direction="out" type="s" />
+    </method>
+    <signal name="ServiceAdded">
+      <arg type="s" name="zone" />
+      <arg type="s" name="service" />
+      <arg type="i" name="timeout" />
+    </signal>
+    <method name="removeSource">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="source" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="removeRichRule">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="rule" />
+      <arg direction="out" type="s" />
+    </method>
+    <signal name="SourceAdded">
+      <arg type="s" name="zone" />
+      <arg type="s" name="source" />
+    </signal>
+    <method name="changeZoneOfSource">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="source" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="getForwardPorts">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="aas" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="ForwardStructList"/>
+    </method>
+    <signal name="ZoneOfInterfaceChanged">
+      <arg type="s" name="zone" />
+      <arg type="s" name="interface" />
+    </signal>
+    <signal name="ZoneOfSourceChanged">
+      <arg type="s" name="zone" />
+      <arg type="s" name="source" />
+    </signal>
+    <signal name="InterfaceAdded">
+      <arg type="s" name="zone" />
+      <arg type="s" name="interface" />
+    </signal>
+    <signal name="ServiceRemoved">
+      <arg type="s" name="zone" />
+      <arg type="s" name="service" />
+    </signal>
+    <method name="getIcmpBlocks">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="as" />
+    </method>
+    <method name="queryForwardPort">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="port" />
+      <arg direction="in"  type="s" name="protocol" />
+      <arg direction="in"  type="s" name="toport" />
+      <arg direction="in"  type="s" name="toaddr" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="getSources">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="as" />
+    </method>
+    <method name="getZones">
+      <arg direction="out" type="as" />
+    </method>
+    <method name="addRichRule">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="rule" />
+      <arg direction="in"  type="i" name="timeout" />
+      <arg direction="out" type="s" />
+    </method>
+    <signal name="MasqueradeAdded">
+      <arg type="s" name="zone" />
+      <arg type="i" name="timeout" />
+    </signal>
+    <signal name="IcmpBlockAdded">
+      <arg type="s" name="zone" />
+      <arg type="s" name="icmp" />
+      <arg type="i" name="timeout" />
+    </signal>
+    <signal name="ForwardPortRemoved">
+      <arg type="s" name="zone" />
+      <arg type="s" name="port" />
+      <arg type="s" name="protocol" />
+      <arg type="s" name="toport" />
+      <arg type="s" name="toaddr" />
+    </signal>
+    <signal name="PortRemoved">
+      <arg type="s" name="zone" />
+      <arg type="s" name="port" />
+      <arg type="s" name="protocol" />
+    </signal>
+    <method name="queryMasquerade">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="removeMasquerade">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="out" type="s" />
+    </method>
+    <signal name="ForwardPortAdded">
+      <arg type="s" name="zone" />
+      <arg type="s" name="port" />
+      <arg type="s" name="protocol" />
+      <arg type="s" name="toport" />
+      <arg type="s" name="toaddr" />
+      <arg type="i" name="timeout" />
+    </signal>
+    <method name="removeForwardPort">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="port" />
+      <arg direction="in"  type="s" name="protocol" />
+      <arg direction="in"  type="s" name="toport" />
+      <arg direction="in"  type="s" name="toaddr" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="getZoneOfSource">
+      <arg direction="in"  type="s" name="source" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="queryRichRule">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="rule" />
+      <arg direction="out" type="b" />
+    </method>
+    <method name="addInterface">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="interface" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="addForwardPort">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="port" />
+      <arg direction="in"  type="s" name="protocol" />
+      <arg direction="in"  type="s" name="toport" />
+      <arg direction="in"  type="s" name="toaddr" />
+      <arg direction="in"  type="i" name="timeout" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="removePort">
+      <arg direction="in"  type="s" name="zone" />
+      <arg direction="in"  type="s" name="port" />
+      <arg direction="in"  type="s" name="protocol" />
+      <arg direction="out" type="s" />
+    </method>
+    <method name="getActiveZones">
+      <arg direction="out" type="a{sa{sas}}" />
+      <annotation name="org.qtproject.QtDBus.QtTypeName.Out0" value="ActiveZonesList"/>
+    </method>
+  </interface>
+  <node name="config"/>
+</node>
