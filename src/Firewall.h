@@ -54,6 +54,7 @@ return polkit.Result.YES;
 #include <QtDBus/QtDBus>
 
 #include "firewalld_types.h"
+#include "firewalld1_interface.h"
 
 /*! \brief Class representing the state of the firewall, including information 
   on zones and services.
@@ -83,7 +84,7 @@ class Firewall : public QObject {
    *
    * Does not include ports associated with enabled services.
    */
-  QList< PortProtoStruct > GetPorts( QString zone );
+  QList< PortProtoStruct > GetPorts( const QString& zone );
 
   /*! @}
    */
@@ -94,7 +95,7 @@ class Firewall : public QObject {
 
   /*! \brief Returns the names of the enabled services for the specified zone.
    */
-  QStringList GetServices( QString zone = QString("") );
+  QStringList GetServices( const QString& zone = QString("") );
 
   /*! \brief Returns information for the specified service.
    */
@@ -207,9 +208,12 @@ class Firewall : public QObject {
   void Reloaded();
   
  private:
-  QDBusInterface* _pBaseIface;
+  org::fedoraproject::FirewallD1* _pBaseIface;
+  org::fedoraproject::firewalld1::zone* _pZoneIface;
+  /*
   QDBusInterface* _pConfigIface;
   QDBusInterface* _pZoneIface;
+  */
 
 };
 

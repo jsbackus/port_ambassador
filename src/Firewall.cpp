@@ -29,32 +29,31 @@ Firewall::Firewall() {
   RegisterFirewallDTypes();
   
   QDBusConnection bus = QDBusConnection::systemBus();
-  _pBaseIface = new QDBusInterface("org.fedoraproject.FirewallD1", 
-				   "/org/fedoraproject/FirewallD1",
-				   "org.fedoraproject.FirewallD1", bus);
+  _pBaseIface = 
+    new org::fedoraproject::FirewallD1("org.fedoraproject.FirewallD1", 
+				       "/org/fedoraproject/FirewallD1", 
+				       bus);
+  _pZoneIface = 
+    new org::fedoraproject::firewalld1::zone("org.fedoraproject.FirewallD1", 
+					     "/org/fedoraproject/FirewallD1", 
+					     bus);
+  /*
   _pConfigIface = new QDBusInterface("org.fedoraproject.FirewallD1", 
 				     "/org/fedoraproject/FirewallD1",
 				     "org.fedoraproject.FirewallD1.config", bus);
-  _pZoneIface = new QDBusInterface("org.fedoraproject.FirewallD1", 
-				   "/org/fedoraproject/FirewallD1",
-				   "org.fedoraproject.FirewallD1.zone", bus);
-
+  */
   // Connect signals
-  bus.connect("org.fedoraproject.FirewallD1", "/org/fedoraproject/FirewallD1",
-	      "org.fedoraproject.FirewallD1", "DefaultZoneChanged", this, 
-	      SLOT(GetDefaultZoneChanged(QString)));
+  QObject::connect(_pBaseIface, SIGNAL(DefaultZoneChanged(const QString&)),
+		   this, SLOT(GetDefaultZoneChanged(QString)));
 
-  bus.connect("org.fedoraproject.FirewallD1", "/org/fedoraproject/FirewallD1",
-	      "org.fedoraproject.FirewallD1", "PanicModeDisabled", this, 
-	      SLOT(GetPanicModeDisabled()));
+  QObject::connect(_pBaseIface, SIGNAL(PanicModeDisabled()),
+		   this, SLOT(GetPanicModeDisabled()));
 
-  bus.connect("org.fedoraproject.FirewallD1", "/org/fedoraproject/FirewallD1",
-	      "org.fedoraproject.FirewallD1", "PanicModeEnabled", this, 
-	      SLOT(GetPanicModeEnabled()));
+  QObject::connect(_pBaseIface, SIGNAL(PanicModeEnabled()),
+		   this, SLOT(GetPanicModeEnabled()));
 
-  bus.connect("org.fedoraproject.FirewallD1", "/org/fedoraproject/FirewallD1",
-	      "org.fedoraproject.FirewallD1", "Reloaded", this, 
-	      SLOT(Reloaded()));
+  QObject::connect(_pBaseIface, SIGNAL(Reloaded()),
+		   this, SLOT(Reloaded()));
 }
 
 Firewall::~Firewall() {
@@ -62,12 +61,12 @@ Firewall::~Firewall() {
     delete _pBaseIface;
     _pBaseIface = NULL;
   }
-
+  /*
   if( _pConfigIface != NULL ) {
     delete _pConfigIface;
     _pConfigIface = NULL;
   }
-
+  */
   if( _pZoneIface != NULL ) {
     delete _pZoneIface;
     _pZoneIface = NULL;
@@ -75,22 +74,22 @@ Firewall::~Firewall() {
 }
 
 void Firewall::Reload() {
-  QDBusReply< QString > reply = _pBaseIface->call( "reload" );
+  QDBusReply< QString > reply = _pBaseIface->reload();
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
 }
 
 void Firewall::SaveSettings() {
-  QDBusReply< QString > reply = _pBaseIface->call( "runtimeToPermanent" );  
+  QDBusReply< QString > reply = _pBaseIface->runtimeToPermanent();
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
 }
 
-QList< PortProtoStruct > Firewall::GetPorts( QString zone ) {
+QList< PortProtoStruct > Firewall::GetPorts( const QString& zone ) {
   QDBusReply< QList<QStringList> > reply = 
-    _pZoneIface->call( "getPorts", zone );
+    _pZoneIface->getPorts( zone );
 
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
@@ -108,13 +107,13 @@ QList< PortProtoStruct > Firewall::GetPorts( QString zone ) {
   return retVal;
 }
 
-QStringList Firewall::GetServices( QString zone ) {
+QStringList Firewall::GetServices( const QString& zone ) {
   QDBusReply< QStringList > reply;
 
   if( 0 < zone.length() ) {
-    reply = _pZoneIface->call( "getServices", zone );
+    reply = _pZoneIface->getServices( zone );
   } else {
-    reply = _pBaseIface->call( "listServices" );
+    reply = _pBaseIface->listServices( );
   }
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
@@ -125,7 +124,7 @@ QStringList Firewall::GetServices( QString zone ) {
 ServiceSettings Firewall::GetService( QString service ) {
 
   QDBusReply< ServiceSettings > reply = 
-    _pBaseIface->call("getServiceSettings", service);
+    _pBaseIface->getServiceSettings( service );
 
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
@@ -135,7 +134,7 @@ ServiceSettings Firewall::GetService( QString service ) {
 }
 
 QStringList Firewall::GetZones() {
-  QDBusReply< QStringList > reply = _pZoneIface->call( "getZones" );
+  QDBusReply< QStringList > reply = _pZoneIface->getZones( );
   
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
@@ -145,7 +144,7 @@ QStringList Firewall::GetZones() {
 }
 
 QString Firewall::GetDefaultZone() {
-  QDBusReply< QString > reply = _pBaseIface->call( "getDefaultZone" );
+  QDBusReply< QString > reply = _pBaseIface->getDefaultZone( );
   
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
@@ -155,7 +154,7 @@ QString Firewall::GetDefaultZone() {
 }
 
 void Firewall::SetDefaultZone( QString zone ) {
-  QDBusReply< QString > reply = _pBaseIface->call( "setDefaultZone", zone );
+  QDBusReply< QString > reply = _pBaseIface->setDefaultZone( zone );
 
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
@@ -165,7 +164,7 @@ void Firewall::SetDefaultZone( QString zone ) {
 ZoneSettings Firewall::GetZone(QString zone ) {
 
   QDBusReply< ZoneSettings > reply = 
-    _pBaseIface->call("getZoneSettings", zone);
+    _pBaseIface->getZoneSettings( zone );
 
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
@@ -176,7 +175,7 @@ ZoneSettings Firewall::GetZone(QString zone ) {
 }
 
 QStringList Firewall::GetIcmpTypes() {
-  QDBusReply< QStringList > reply = _pBaseIface->call( "listIcmpTypes" );
+  QDBusReply< QStringList > reply = _pBaseIface->listIcmpTypes( );
   
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
@@ -187,8 +186,8 @@ QStringList Firewall::GetIcmpTypes() {
 IcmpTypeSettings Firewall::GetIcmpType( QString icmpType ) {
 
   QDBusReply< IcmpTypeSettings > reply = 
-    _pBaseIface->call("getIcmpTypeSettings", icmpType);
-
+    _pBaseIface->getIcmpTypeSettings( icmpType );
+  
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
   }
@@ -198,8 +197,7 @@ IcmpTypeSettings Firewall::GetIcmpType( QString icmpType ) {
 }
 
 bool Firewall::IsInPanicMode() {
-  QDBusReply< bool > reply = 
-    _pBaseIface->call("queryPanicMode");
+  QDBusReply< bool > reply = _pBaseIface->queryPanicMode();
 
   if(!reply.isValid()) {
     emit OnError( QString("Firewall Error: ") + reply.error().message() );
@@ -212,9 +210,9 @@ void Firewall::SetPanicMode( bool enable ) {
 
   QDBusReply< QString > reply;
   if( enable ) {
-    reply = _pBaseIface->call( "enablePanicMode" );
+    reply = _pBaseIface->enablePanicMode( );
   } else {
-    reply = _pBaseIface->call( "disablePanicMode" );
+    reply = _pBaseIface->disablePanicMode( );
   }
 
   if(!reply.isValid()) {
