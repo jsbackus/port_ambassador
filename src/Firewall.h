@@ -99,7 +99,7 @@ class Firewall : public QObject {
 
   /*! \brief Returns information for the specified service.
    */
-  ServiceSettings GetService( QString service );
+  ServiceSettings GetService( const QString& service );
   
   /*! @}
    */
@@ -118,11 +118,11 @@ class Firewall : public QObject {
 
   /*! \brief Sets the name of the default zone.
    */
-  void SetDefaultZone( QString zone );
+  void SetDefaultZone( const QString& zone );
 
   /*! \brief Returns information for the specified zone.
    */
-  ZoneSettings GetZone( QString zone );
+  ZoneSettings GetZone( const QString& zone );
 
   /*! @}
    */
@@ -137,7 +137,7 @@ class Firewall : public QObject {
 
   /*! \brief Returnsinformation for the specified ICMP type.
    */
-  IcmpTypeSettings GetIcmpType( QString icmpType );
+  IcmpTypeSettings GetIcmpType( const QString& icmpType );
 
   /*! @}
    */
@@ -169,7 +169,7 @@ class Firewall : public QObject {
   void GetReloaded();
   /*! \brief Slot to connect to FirewallD's DefaultZoneChanged signal
    */
-  void GetDefaultZoneChanged( QString zone );
+  void GetDefaultZoneChanged( const QString& zone );
 
  signals:
   /*! \brief Emitted whenever an error occurs.
@@ -210,10 +210,7 @@ class Firewall : public QObject {
  private:
   org::fedoraproject::FirewallD1* _pBaseIface;
   org::fedoraproject::firewalld1::zone* _pZoneIface;
-  /*
-  QDBusInterface* _pConfigIface;
-  QDBusInterface* _pZoneIface;
-  */
+  //QDBusInterface* _pConfigIface;
 
 };
 

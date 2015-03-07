@@ -121,7 +121,7 @@ QStringList Firewall::GetServices( const QString& zone ) {
   return reply.value();
 }
 
-ServiceSettings Firewall::GetService( QString service ) {
+ServiceSettings Firewall::GetService( const QString& service ) {
 
   QDBusReply< ServiceSettings > reply = 
     _pBaseIface->getServiceSettings( service );
@@ -153,7 +153,7 @@ QString Firewall::GetDefaultZone() {
   return reply.value();
 }
 
-void Firewall::SetDefaultZone( QString zone ) {
+void Firewall::SetDefaultZone( const QString& zone ) {
   QDBusReply< QString > reply = _pBaseIface->setDefaultZone( zone );
 
   if(!reply.isValid()) {
@@ -161,7 +161,7 @@ void Firewall::SetDefaultZone( QString zone ) {
   }
 }
 
-ZoneSettings Firewall::GetZone(QString zone ) {
+ZoneSettings Firewall::GetZone( const QString& zone ) {
 
   QDBusReply< ZoneSettings > reply = 
     _pBaseIface->getZoneSettings( zone );
@@ -183,7 +183,7 @@ QStringList Firewall::GetIcmpTypes() {
   return reply.value();
 }
 
-IcmpTypeSettings Firewall::GetIcmpType( QString icmpType ) {
+IcmpTypeSettings Firewall::GetIcmpType( const QString& icmpType ) {
 
   QDBusReply< IcmpTypeSettings > reply = 
     _pBaseIface->getIcmpTypeSettings( icmpType );
@@ -236,7 +236,7 @@ void Firewall::GetReloaded() {
   emit Reloaded();
 }
 
-void Firewall::GetDefaultZoneChanged( QString zone ) {
+void Firewall::GetDefaultZoneChanged( const QString& zone ) {
   emit OnDebug( 5, QString("Default Zone Changed to '") + zone + QString("'") );
   emit DefaultZoneChanged( zone );
 }
