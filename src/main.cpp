@@ -75,6 +75,8 @@ int main(int argc, char **argv) {
     qDebug() << "  " << val << ":";
     DumpIcmpType( wall, val );
   }
+
+  wall.SetDefaultZone( "external" );
   
   // Enter main event loop until user hits CTRL+C
   while(1) {
