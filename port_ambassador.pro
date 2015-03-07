@@ -4,11 +4,13 @@ win32:CONFIG += console
 
 HEADERS += src/Firewall.h
 HEADERS += src/Firewall_debug.h
+HEADERS += src/firewalld_types.h
 HEADERS += src/ConsoleLogger.h
 
 SOURCES += src/main.cpp
 SOURCES += src/Firewall.cpp
 SOURCES += src/Firewall_debug.cpp
+SOURCES += src/firewalld_types.cpp
 SOURCES += src/ConsoleLogger.cpp
 
 //DBUS_INTERFACES += dbus_interfaces/org.fedoraproject.FirewallD1.xml
